@@ -31,7 +31,6 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -42,8 +41,6 @@ import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -69,8 +66,22 @@ public final class BConfig implements ConfigData {
     /**
      * Notify with sound.
      */
-    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Gui.Tooltip(count = 2)
     public static boolean sound = true;
+
+    /**
+     * Notify with visual overlay.
+     */
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    @ConfigEntry.BoundedDiscrete(max = 1000L)
+    public static long visual = 250L;
+
+    /**
+     * Visual overlay color.
+     */
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.ColorPicker(allowAlpha = true)
+    public static int visualColor = 0x80FF0000;
 
     /**
      * Prohibited items.

@@ -24,19 +24,13 @@
 
 package ru.vidtu.bscfsio.mixins;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.NonNullList;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -44,38 +38,28 @@ import ru.vidtu.bscfsio.BConfig;
 import ru.vidtu.bscfsio.BSlot;
 
 /**
- * Class that does the cancelling.
+ * Mixin that draws visual overlay on slots.
  *
  * @author VidTu
  */
-@Mixin(MultiPlayerGameMode.class)
-public final class MultiPlayerGameModeMixin {
-    @Shadow @Final private Minecraft minecraft;
-
+@Mixin(AbstractContainerScreen.class)
+public final class AbstractContainerScreenMixin extends Screen {
     /**
      * An instance of this class cannot be created.
      *
      * @throws AssertionError Always
      */
     @Contract(value = "-> fail", pure = true)
-    private MultiPlayerGameModeMixin() {
+    private AbstractContainerScreenMixin() {
+        super(null);
         throw new AssertionError("No instances.");
     }
 
-    @Inject(method = "handleInventoryMouseClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;clicked(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V", shift = At.Shift.BEFORE), cancellable = true)
-    public void bscfsio$handleInventoryMouseClick$clicked(int window, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
-        if (click != ClickType.QUICK_MOVE || !BConfig.enabled) return;
-        NonNullList<Slot> items = player.containerMenu.slots;
-        if (slot < 0 || slot >= items.size()) return;
-        Slot clicked = items.get(slot);
-        ItemStack stack = clicked.getItem();
-        if (stack.isEmpty() || !BConfig.itemSet.contains(stack.getItem())) return;
-        ci.cancel();
-        if (BConfig.sound) {
-            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PIG_AMBIENT, 1.0F));
-        }
-        if (BConfig.visual > 0) {
-            ((BSlot) clicked).bscfsio$renderRedUntil(System.nanoTime() + BConfig.visual * 1_000_000L);
-        }
+    @Inject(method = "renderSlot", at = @At("TAIL"))
+    public void bscfsio$renderSlot$tail(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
+        if (BConfig.visual <= 0) return;
+        long time = ((BSlot) slot).bscfsio$renderRedUntil();
+        if (System.nanoTime() >= time) return;
+        graphics.fill(RenderType.guiOverlay(), slot.x, slot.y, slot.x + 16, slot.y + 16, BConfig.visualColor);
     }
 }
