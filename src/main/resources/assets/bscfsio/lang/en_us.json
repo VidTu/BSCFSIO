@@ -1,0 +1,17 @@
+{
+  "bscfsio.true": "BSCFSIO enabled.",
+  "bscfsio.false": "BSCFSIO disabled.",
+  "modmenu.descriptionTranslation.bscfsio": "Mod that sometimes somehow block somewhat resembling clicking inventory by someone.",
+  "modmenu.summaryTranslation.bscfsio": "Somehow sometimes block somewhat.",
+  "key.bscfsio.config": "Open Config",
+  "key.bscfsio.toggle": "Toggle",
+  "key.bscfsio": "BSCFSIO",
+  "text.autoconfig.bscfsio.title": "BlockShiftClickingForSomeItemsOnly",
+  "text.autoconfig.bscfsio.option.enabled": "Enabled",
+  "text.autoconfig.bscfsio.option.enabled.@Tooltip": "Whether to enable the mod.",
+  "text.autoconfig.bscfsio.option.sound": "Sound",
+  "text.autoconfig.bscfsio.option.sound.@Tooltip": "Whether to use a special sound when item movement is prohibited.",
+  "text.autoconfig.bscfsio.option.items": "Item IDs",
+  "text.autoconfig.bscfsio.option.items.@Tooltip[0]": "List of item IDs to prohibit moving with shift-clicking.",
+  "text.autoconfig.bscfsio.option.items.@Tooltip[1]": "Unknown or empty IDs are silently ignored."
+}

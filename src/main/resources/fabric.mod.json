@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "bscfsio",
+  "version": "${version}",
+  "name": "BlockShiftClickingForSomeItemsOnly",
+  "description": "Mod that sometimes somehow block somewhat resembling clicking inventory by someone.",
+  "authors": [
+    "VidTu"
+  ],
+  "contact": {
+    "homepage": "https://github.com/VidTu/BSCFSIO",
+    "sources": "https://github.com/VidTu/BSCFSIO",
+    "issues": "https://github.com/VidTu/BSCFSIO",
+    "discord": "https://discord.gg/Q6saSVSuYQ"
+  },
+  "license": "MIT",
+  "icon": "bscfsio.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "ru.vidtu.bscfsio.BSCFSIO"
+    ],
+    "modmenu": [
+      "ru.vidtu.bscfsio.BModMenu"
+    ]
+  },
+  "mixins": [
+    "bscfsio.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.10",
+    "minecraft": ">=1.20 <=1.20.1",
+    "fabric-api": ">=0.92.0",
+    "java": ">=17"
+  },
+  "recommends": {
+    "modmenu": ">=7.2.0"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github_releases": "https://github.com/VidTu/BSCFSIO/releases",
+        "modmenu.discord": "https://discord.gg/Q6saSVSuYQ"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "ru.vidtu.bscfsio.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "mixins": [
+    "MultiPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
