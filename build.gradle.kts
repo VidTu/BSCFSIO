@@ -18,7 +18,7 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:1.20.1")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:0.16.0")
+    modImplementation("net.fabricmc:fabric-loader:0.16.2")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.2+1.20.1")
     modImplementation("com.terraformersmc:modmenu:7.2.2")
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:11.1.118")
