@@ -1,5 +1,6 @@
 plugins {
-    id("fabric-loom") version "1.7-SNAPSHOT"
+    id("java")
+    alias(libs.plugins.fabric.loom)
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -16,12 +17,12 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.20.1")
+    minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:0.16.5")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.2+1.20.1")
-    modImplementation("com.terraformersmc:modmenu:7.2.2")
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:11.1.118")
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.api)
+    modImplementation(libs.modmenu)
+    modImplementation(libs.cloth.config)
 }
 
 tasks.withType<JavaCompile> {
