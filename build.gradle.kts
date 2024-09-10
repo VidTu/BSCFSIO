@@ -17,10 +17,15 @@ repositories {
 }
 
 dependencies {
+    // Minecraft (Provided)
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
+
+    // Fabric (Provided)
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)
+
+    // Dependencies (Provided)
     modImplementation(libs.modmenu)
     modImplementation(libs.cloth.config)
 }
