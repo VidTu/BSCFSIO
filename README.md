@@ -35,7 +35,8 @@ Mod that sometimes somehow block somewhat resembling clicking inventory by someo
 **A**: Yes, you'll need Fabric API. You'll also need Cloth Config API.
 
 **Q**: Is this mod open source?    
-**A**: Yes. (Licensed under [MIT](https://github.com/VidTu/BSCFSIO/blob/main/LICENSE))
+**A**: [Yes.](https://github.com/VidTu/BSCFSIO) (Licensed
+under [MIT License](https://github.com/VidTu/BSCFSIO/blob/main/LICENSE))
 
 **Q**: I've found a bug.  
 **A**: Report it [here](https://github.com/VidTu/BSCFSIO/issues). There's no guarantee it'll be fixed.
