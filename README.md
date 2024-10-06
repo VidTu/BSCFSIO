@@ -23,7 +23,7 @@ Mod that sometimes somehow block somewhat resembling clicking inventory by someo
 **A**: [GitHub](https://github.com/VidTu/BSCFSIO).
 
 **Q**: Which mod loaders are supported?  
-**A**: Fabric is supported, Quilt should work too. Forge and NeoForge are not supported and never will be.
+**A**: Fabric is supported, Quilt should work too. Forge and NeoForge are NOT supported and never will be.
 
 **Q**: Which versions are supported?    
 **A**: Minecraft 1.20.1 only.
@@ -32,7 +32,7 @@ Mod that sometimes somehow block somewhat resembling clicking inventory by someo
 **A**: Because my friend that asked my plays Fabric 1.20.1. Fork it and PR it, maybe I'll accept.
 
 **Q**: Do I need Fabric API?    
-**A**: Yes, you'll need Fabric API. You'll also need Cloth Config.
+**A**: Yes, you'll need Fabric API. You'll also need Cloth Config API.
 
 **Q**: Is this mod open source?    
 **A**: Yes. (Licensed under [MIT](https://github.com/VidTu/BSCFSIO/blob/main/LICENSE))
