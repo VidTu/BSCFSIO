@@ -59,39 +59,39 @@ import java.util.stream.Collectors;
 @Config(name = "bscfsio")
 public final class BConfig implements ConfigData {
     /**
-     * Whether the mod is enabled.
+     * Whether the mod is enabled, {@code true} by default.
      */
     @ConfigEntry.Gui.Tooltip
     public static boolean enabled = true;
 
     /**
-     * Notify with sound.
+     * Notify with sound, {@code true} by default.
      */
     @ConfigEntry.Gui.Tooltip(count = 2)
     public static boolean sound = true;
 
     /**
-     * Notify with visual overlay.
+     * Notify with visual overlay, {@code 250} by default.
      */
     @ConfigEntry.Gui.Tooltip(count = 3)
     @ConfigEntry.BoundedDiscrete(max = 1000L)
     public static long visual = 250L;
 
     /**
-     * Visual overlay color.
+     * Visual overlay color, {@code 0x80FF0000} by default.
      */
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.ColorPicker(allowAlpha = true)
     public static int visualColor = 0x80FF0000;
 
     /**
-     * Prohibited items.
+     * Prohibited items, {@code ["totem_of_undying"]} by default.
      */
     @ConfigEntry.Gui.Tooltip(count = 2)
     public static List<String> items = new ArrayList<>(List.of("totem_of_undying"));
 
     /**
-     * Prohibited items, cached type.
+     * Prohibited items, cached type. Not saved.
      */
     @ConfigEntry.Gui.Excluded
     public static transient Set<Item> itemSet = Set.copyOf(items.stream()
