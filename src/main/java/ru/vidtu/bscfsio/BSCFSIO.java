@@ -34,13 +34,14 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class of BlockShiftClickingForSomeItemsOnly.
+ * Main BSCFSIO class.
  *
  * @author VidTu
  */
@@ -52,33 +53,49 @@ public final class BSCFSIO implements ClientModInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger("BSCFSIO");
 
     /**
-     * Open config keybind.
+     * Config keybind. Not bound by default.
      */
     @NotNull
-    private static final KeyMapping CONFIG = new KeyMapping("key.bscfsio.config", GLFW.GLFW_KEY_UNKNOWN, "key.bscfsio");
+    private static final KeyMapping CONFIG_BIND = new KeyMapping("bscfsio.key.config", GLFW.GLFW_KEY_UNKNOWN, "bscfsio.key.category");
 
     /**
-     * Toggle keybind.
+     * Toggle keybind. Not bound by default.
      */
     @NotNull
-    private static final KeyMapping TOGGLE = new KeyMapping("key.bscfsio.toggle", GLFW.GLFW_KEY_UNKNOWN, "key.bscfsio");
+    private static final KeyMapping TOGGLE_BIND = new KeyMapping("bscfsio.key.toggle", GLFW.GLFW_KEY_UNKNOWN, "bscfsio.key.category");
 
+    @ApiStatus.Internal
     @Override
     public void onInitializeClient() {
-        // Load config.
+        // Log.
+        LOGGER.info("BSCFSIO: Loading...");
+
+        // Load the config.
         BConfig.init();
 
-        // Register handlers.
+        // Register the network.
         ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation("bscfsio", "imhere"), (client, handler, buf, responseSender) -> handler.getConnection().disconnect(Component.translatable("bscfsio.false")));
-        KeyBindingHelper.registerKeyBinding(CONFIG);
-        KeyBindingHelper.registerKeyBinding(TOGGLE);
+
+        // Register the config bind.
+        KeyBindingHelper.registerKeyBinding(CONFIG_BIND);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!CONFIG.consumeClick() || client.screen != null) return;
+            // Don't do anything if didn't click yet or if there's an open screen.
+            if (!CONFIG_BIND.consumeClick() || client.screen != null) return;
+
+            // Open the config screen.
             client.setScreen(BConfig.createScreen(null));
         });
+
+        // Register the toggle bind.
+        KeyBindingHelper.registerKeyBinding(TOGGLE_BIND);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!TOGGLE.consumeClick()) return;
-            BConfig.enabled = !BConfig.enabled;
+            // Don't do anything if didn't click yet or if there's an open screen.
+            if (!TOGGLE_BIND.consumeClick()) return;
+
+            // Toggle.
+            boolean newState = (BConfig.enabled = !BConfig.enabled);
+
+            // Show the overlay and play the sound.
             client.gui.setOverlayMessage(Component.translatable("bscfsio." + BConfig.enabled)
                     .withStyle(BConfig.enabled ? ChatFormatting.GREEN : ChatFormatting.RED)
                     .withStyle(ChatFormatting.BOLD), false);

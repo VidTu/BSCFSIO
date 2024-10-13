@@ -1,12 +1,10 @@
 {
   "bscfsio.true": "BSCFSIO включён.",
   "bscfsio.false": "BSCFSIO выключен.",
-  "modmenu.descriptionTranslation.bscfsio": "Мод, который иногда как-то блокирует что-то, напоминающее клики кем-то по инвентарю.",
-  "modmenu.summaryTranslation.bscfsio": "Как-то иногда блокирует что-то.",
-  "key.bscfsio.config": "Открыть конфиг",
-  "key.bscfsio.toggle": "Переключить",
-  "key.bscfsio": "BSCFSIO",
-  "text.autoconfig.bscfsio.title": "BlockShiftClickingForSomeItemsOnly",
+  "bscfsio.key.category": "BSCFSIO",
+  "bscfsio.key.config": "Открыть конфиг",
+  "bscfsio.key.toggle": "Переключить",
+  "text.autoconfig.bscfsio.title": "Конфиг BSCFSIO",
   "text.autoconfig.bscfsio.option.enabled": "Включить",
   "text.autoconfig.bscfsio.option.enabled.@Tooltip": "Включать ли мод.",
   "text.autoconfig.bscfsio.option.sound": "Звук",
@@ -20,5 +18,7 @@
   "text.autoconfig.bscfsio.option.visualColor.@Tooltip": "ARGB-цвет визуального оверлея.",
   "text.autoconfig.bscfsio.option.items": "ID предметов",
   "text.autoconfig.bscfsio.option.items.@Tooltip[0]": "Список ID предметов, которые запрещено перемещать через Shift-клик.",
-  "text.autoconfig.bscfsio.option.items.@Tooltip[1]": "Неизвестные или пустые ID игнорируются."
+  "text.autoconfig.bscfsio.option.items.@Tooltip[1]": "Неизвестные или пустые ID игнорируются.",
+  "modmenu.descriptionTranslation.bscfsio": "Мод, который иногда как-то блокирует что-то, напоминающее клики кем-то по инвентарю.",
+  "modmenu.summaryTranslation.bscfsio": "Как-то иногда блокирует что-то."
 }

@@ -34,17 +34,17 @@ import org.jetbrains.annotations.Contract;
  */
 public interface BSlot {
     /**
-     * Gets the time at which rendering red overlay should be stopped.
+     * Gets the time at which rendering the overlay should be stopped.
      *
      * @return Time to stop rendering (in units of {@link System#nanoTime()})
      */
     @Contract(pure = true)
-    long bscfsio$renderRedUntil();
+    long bscfsio$renderOverlayUntil();
 
     /**
-     * Sets the time at which rendering red overlay should be stopped
+     * Sets the time at which rendering the overlay should be stopped
      *
      * @param time Time to stop rendering (in units of {@link System#nanoTime()})
      */
-    void bscfsio$renderRedUntil(long time);
+    void bscfsio$renderOverlayUntil(long time);
 }

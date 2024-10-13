@@ -87,7 +87,7 @@ tasks.withType<Jar> {
     from(rootDir.resolve("LICENSE"))
     manifest {
         attributes(
-            "Specification-Title" to "BlockShiftClickingForSomeItemsOnly",
+            "Specification-Title" to "BSCFSIO",
             "Specification-Version" to project.version,
             "Specification-Vendor" to "VidTu",
             "Implementation-Title" to "BSCFSIO-Fabric-1.20.1",

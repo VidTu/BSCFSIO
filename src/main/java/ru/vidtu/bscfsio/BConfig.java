@@ -37,6 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +52,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * BSCFSIO config class.
+ * BSCFSIO config.
  *
  * @author VidTu
  */
@@ -109,6 +110,7 @@ public final class BConfig implements ConfigData {
         // Private
     }
 
+    @ApiStatus.Internal
     @Override
     public void validatePostLoad() {
         recacheItems();
@@ -118,7 +120,7 @@ public final class BConfig implements ConfigData {
      * Registers and loads the config.
      */
     public static void init() {
-        // Register.
+        // Register the config.
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.FINAL)
                 .setLenient()
@@ -135,7 +137,7 @@ public final class BConfig implements ConfigData {
             return InteractionResult.SUCCESS;
         });
 
-        // Load.
+        // Load the config.
         AutoConfig.getConfigHolder(BConfig.class).getConfig();
     }
 
@@ -155,7 +157,10 @@ public final class BConfig implements ConfigData {
      * Recalculates the item set.
      */
     private static void recacheItems() {
+        // Remove empty strings, they were probably accidental.
         items.removeIf(String::isBlank);
+
+        // Recalculate the cache.
         itemSet = Set.copyOf(items.stream()
                 .filter(Objects::nonNull)
                 .map(ResourceLocation::tryParse)

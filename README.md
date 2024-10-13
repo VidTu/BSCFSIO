@@ -1,4 +1,4 @@
-# BlockShiftClickingForSomeItemsOnly
+# BSCFSIO
 
 Mod that sometimes somehow block somewhat resembling clicking inventory by someone.
 

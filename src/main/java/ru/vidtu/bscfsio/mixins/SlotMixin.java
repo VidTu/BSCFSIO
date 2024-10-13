@@ -38,10 +38,10 @@ import ru.vidtu.bscfsio.BSlot;
 @Mixin(Slot.class)
 public final class SlotMixin implements BSlot {
     /**
-     * Time at which rendering red overlay should be stopped.
+     * Time at which rendering the overlay should be stopped.
      */
     @Unique
-    private long bscfsio$renderRedUntil = System.nanoTime();
+    private long bscfsio$renderOverlayUntil = System.nanoTime();
 
     /**
      * An instance of this class cannot be created.
@@ -55,12 +55,12 @@ public final class SlotMixin implements BSlot {
 
     @Contract(pure = true)
     @Override
-    public long bscfsio$renderRedUntil() {
-        return this.bscfsio$renderRedUntil;
+    public long bscfsio$renderOverlayUntil() {
+        return this.bscfsio$renderOverlayUntil;
     }
 
     @Override
-    public void bscfsio$renderRedUntil(long time) {
-        this.bscfsio$renderRedUntil = time;
+    public void bscfsio$renderOverlayUntil(long time) {
+        this.bscfsio$renderOverlayUntil = time;
     }
 }

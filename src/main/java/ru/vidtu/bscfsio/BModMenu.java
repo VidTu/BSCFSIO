@@ -26,7 +26,8 @@ package ru.vidtu.bscfsio;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,7 +36,8 @@ import org.jetbrains.annotations.NotNull;
  * @author VidTu
  */
 public final class BModMenu implements ModMenuApi {
-    @CheckReturnValue
+    @ApiStatus.Internal
+    @Contract(pure = true)
     @Override
     @NotNull
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
