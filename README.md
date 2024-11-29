@@ -54,3 +54,23 @@ Monetization and redistributing is allowed as per the [MIT License](https://gith
 
 **Q**: I don't want them to be playing on my server with this.  
 **A**: Cope.
+
+## License
+
+This project is provided under the MIT License.
+Check out [LICENSE](https://github.com/VidTu/BSCFSIO/blob/main/LICENSE) for more information.
+
+## Building
+
+### Preparation
+
+- Ensure JDK 17 (e.g. [Azul Zulu](https://www.azul.com/downloads/)) is installed and is on `PATH`
+  or/and in `JAVA_HOME` environmental variables. (you can have multiple JDKs on path, it'll pick up the correct one)
+- Anti-malware services may slow down building, but won't break it. If you want it,
+  exclude this folder at your own risk.
+- You must have at least 4 GB of available RAM, 10 GB of available disk space, and an active internet connection.
+
+### Building
+
+1. Run `./gradlew build` (`gradlew build` for Windows).
+2. Grab the JAR from the `build/libs` folder.
