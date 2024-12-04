@@ -29,6 +29,7 @@ plugins {
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
 group = "ru.vidtu.bscfsio"
 base.archivesName = "BSCFSIO-Fabric-1.20.1"
 description = "Mod that sometimes somehow block somewhat resembling clicking inventory by someone."
@@ -81,6 +82,11 @@ tasks.withType<ProcessResources> {
     filesMatching("fabric.mod.json") {
         expand("version" to project.version)
     }
+}
+
+tasks.withType<AbstractArchiveTask> {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
 }
 
 tasks.withType<Jar> {
