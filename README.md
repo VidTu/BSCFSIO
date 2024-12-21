@@ -62,15 +62,8 @@ Check out [LICENSE](https://github.com/VidTu/BSCFSIO/blob/main/LICENSE) for more
 
 ## Building
 
-### Preparation
+1. Install Java 8 or newer<sup>*</sup> and dump it into [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) and/or JAVA_HOME.
+2. Run `./gradlew build` from the terminal/PowerShell.
+3. Grab the JAR from the `./build/libs/` folder.
 
-- Ensure JDK 17 (e.g. [Azul Zulu](https://www.azul.com/downloads/)) is installed and is on `PATH`
-  or/and in `JAVA_HOME` environmental variables. (you can have multiple JDKs on path, it'll pick up the correct one)
-- Anti-malware services may slow down building, but won't break it. If you want it,
-  exclude this folder at your own risk.
-- You must have at least 4 GB of available RAM, 10 GB of available disk space, and an active internet connection.
-
-### Building
-
-1. Run `./gradlew build` (`gradlew build` for Windows).
-2. Grab the JAR from the `build/libs` folder.
+<sup>* Actual Java version used currently is 17, Gradle will automatically download it.</sup>
