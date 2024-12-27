@@ -62,8 +62,9 @@ Check out [LICENSE](https://github.com/VidTu/BSCFSIO/blob/main/LICENSE) for more
 
 ## Building
 
-1. Install Java 8 or newer<sup>*</sup> and dump it into [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) and/or JAVA_HOME.
-2. Run `./gradlew build` from the terminal/PowerShell.
-3. Grab the JAR from the `./build/libs/` folder.
+1. Have 4 GB of free RAM, 10 GB of free disk space, and an active internet connection.
+2. Install Java 8 or newer<sup>*</sup> and dump it into PATH and/or JAVA_HOME.
+3. Run `./gradlew build` from the terminal/PowerShell.
+4. Grab the JAR from the `./build/libs/` folder.
 
 <sup>* Actual Java version used currently is 17, Gradle will automatically download it.</sup>
