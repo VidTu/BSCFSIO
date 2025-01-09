@@ -30,9 +30,3 @@ updates:
     directory: '/'
     schedule:
       interval: daily
-    ignore:
-      - dependency-name: "*minecraft*"
-      - dependency-name: "*fabric-api*"
-      - dependency-name: "*modmenu*"
-      - dependency-name: "*cloth-config*"
-      - dependency-name: "*architectury.loom*"
