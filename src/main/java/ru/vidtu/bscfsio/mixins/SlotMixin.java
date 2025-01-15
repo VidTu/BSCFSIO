@@ -41,7 +41,7 @@ public final class SlotMixin implements BSlot {
      * Time at which rendering the overlay should be stopped.
      */
     @Unique
-    private long bscfsio$renderOverlayUntil = System.nanoTime();
+    private long bscfsio_renderOverlayUntil = System.nanoTime();
 
     /**
      * An instance of this class cannot be created.
@@ -55,12 +55,12 @@ public final class SlotMixin implements BSlot {
 
     @Contract(pure = true)
     @Override
-    public long bscfsio$renderOverlayUntil() {
-        return this.bscfsio$renderOverlayUntil;
+    public long bscfsio_renderOverlayUntil() {
+        return this.bscfsio_renderOverlayUntil;
     }
 
     @Override
-    public void bscfsio$renderOverlayUntil(long time) {
-        this.bscfsio$renderOverlayUntil = time;
+    public void bscfsio_renderOverlayUntil(long time) {
+        this.bscfsio_renderOverlayUntil = time;
     }
 }

@@ -56,12 +56,12 @@ public final class AbstractContainerScreenMixin extends Screen {
     }
 
     @Inject(method = "renderSlot", at = @At("TAIL"))
-    public void bscfsio$renderSlot$tail(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
+    public void bscfsio_renderSlot_tail(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
         // Skip if visual overlay is disabled.
         if (BConfig.visual <= 0) return;
 
         // Skip if overlay has expired.
-        long time = ((BSlot) slot).bscfsio$renderOverlayUntil();
+        long time = ((BSlot) slot).bscfsio_renderOverlayUntil();
         if (System.nanoTime() >= time) return;
 
         // Render the overlay.

@@ -63,7 +63,7 @@ public final class MultiPlayerGameModeMixin {
     }
 
     @Inject(method = "handleInventoryMouseClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;clicked(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V", shift = At.Shift.BEFORE), cancellable = true)
-    public void bscfsio$handleInventoryMouseClick$clicked(int window, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
+    public void bscfsio_handleInventoryMouseClick_clicked(int window, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
         // Skip if click is not shift-click or the mod is disabled.
         if (click != ClickType.QUICK_MOVE || !BConfig.enabled) return;
 
@@ -84,7 +84,7 @@ public final class MultiPlayerGameModeMixin {
             this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PIG_AMBIENT, 1.0F));
         }
         if (BConfig.visual > 0) {
-            ((BSlot) clicked).bscfsio$renderOverlayUntil(System.nanoTime() + BConfig.visual * 1_000_000L);
+            ((BSlot) clicked).bscfsio_renderOverlayUntil(System.nanoTime() + BConfig.visual * 1_000_000L);
         }
     }
 }

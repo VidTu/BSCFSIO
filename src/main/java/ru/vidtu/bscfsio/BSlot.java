@@ -39,12 +39,12 @@ public interface BSlot {
      * @return Time to stop rendering (in units of {@link System#nanoTime()})
      */
     @Contract(pure = true)
-    long bscfsio$renderOverlayUntil();
+    long bscfsio_renderOverlayUntil();
 
     /**
      * Sets the time at which rendering the overlay should be stopped
      *
      * @param time Time to stop rendering (in units of {@link System#nanoTime()})
      */
-    void bscfsio$renderOverlayUntil(long time);
+    void bscfsio_renderOverlayUntil(long time);
 }
