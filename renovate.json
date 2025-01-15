@@ -10,7 +10,7 @@
     },
     {
       "matchPackageNames": ["net.fabricmc.fabric-api:fabric-api"],
-      "allowedVersions": "^.*\\+1\\.20\\.1$"
+      "allowedVersions": "/^.*\\+1\\.20\\.1$/"
     },
     {
       "matchPackageNames": ["com.terraformersmc:modmenu"],
