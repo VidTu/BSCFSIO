@@ -21,15 +21,17 @@ Mod that sometimes somehow block somewhat resembling clicking inventory by someo
 
 **Q**: Where can I download this mod?  
 **A**: [GitHub](https://github.com/VidTu/BSCFSIO).
+You can also find unstable builds at [GitHub Actions](https://github.com/VidTu/BSCFSIO/actions),
+you'll need a GitHub account to download them.
 
 **Q**: Which mod loaders are supported?  
-**A**: Fabric is supported, Quilt should work too. Forge and NeoForge are NOT supported and never will be.
+**A**: Fabric is supported, Quilt should work too. Forge and NeoForge are NOT supported and may never will be.
 
 **Q**: Which versions are supported?    
 **A**: Minecraft 1.20.1 only.
 
 **Q**: Why not Forge or 1.20.6 or 1.21.1 or 1.19.4 or 1.20.4?  
-**A**: Because my friend that asked my plays Fabric 1.20.1. Fork it and PR it, maybe I'll accept.
+**A**: Because my friend plays Fabric 1.20.1.
 
 **Q**: Do I need Fabric API?    
 **A**: Yes, you'll need Fabric API. You'll also need Cloth Config API.
