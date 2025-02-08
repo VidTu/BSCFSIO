@@ -45,8 +45,13 @@ loom {
     silentMojangMappingsLicense()
     runs.named("client") {
         vmArgs(
+            // Allow JVM without hotswap to work.
             "-XX:+IgnoreUnrecognizedVMOptions",
+
+            // Set up RAM.
             "-Xmx2G",
+
+            // Allow hot swapping on supported JVM.
             "-XX:+AllowEnhancedClassRedefinition",
             "-XX:+AllowRedefinitionToAddDeleteMethods",
             "-XX:HotswapAgent=fatjar",
