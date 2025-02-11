@@ -65,11 +65,11 @@ loom {
 }
 
 dependencies {
-    // Minecraft (Provided)
+    // Minecraft
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
 
-    // Fabric (Provided)
+    // Fabric
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)
     modImplementation(libs.modmenu)
@@ -85,7 +85,7 @@ tasks.withType<JavaCompile> {
 tasks.withType<ProcessResources> {
     inputs.property("version", version)
     filesMatching("fabric.mod.json") {
-        expand("version" to version)
+        expand(inputs.properties)
     }
 }
 
