@@ -35,7 +35,7 @@
       {
         "id": "fabric-api",
         "versions": ">=0.92.0",
-        "reason": "BSCFSIO requires Fabric API to properly implement its functionality."
+        "reason": "BSCFSIO requires Fabric API (or QFAPI/QSL) to properly implement its functionality."
       },
       {
         "id": "modmenu",
