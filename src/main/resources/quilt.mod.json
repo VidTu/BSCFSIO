@@ -23,35 +23,25 @@
     "intermediate_mappings": "net.fabricmc:intermediary",
     "depends": [
       {
-        "id": "quilt_loader",
-        "versions": ">=0.27.0",
-        "reason": "BSCFSIO requires Quilt Mod Loader to be loaded."
-      },
-      {
         "id": "minecraft",
         "versions": "1.20.1",
         "reason": "BSCFSIO works only with Minecraft 1.20.1."
       },
       {
         "id": "fabric-api",
-        "versions": ">=0.92.0",
+        "versions": "*",
         "reason": "BSCFSIO requires Fabric API (or QFAPI/QSL) to properly implement its functionality."
       },
       {
+        "id": "cloth-config",
+        "versions": "*",
+        "reason": "BSCFSIO uses Cloth Config API for configuration."
+      },
+      {
         "id": "modmenu",
-        "versions": ">=7.2.0",
+        "versions": "*",
         "reason": "BSCFSIO recommends ModMenu for configuration access.",
         "optional": true
-      },
-      {
-        "id": "java",
-        "versions": ">=17",
-        "reason": "BSCFSIO makes use of Java 17 in its code."
-      },
-      {
-        "id": "java",
-        "versions": ">=11.1",
-        "reason": "BSCFSIO uses Cloth Config API for configuration."
       }
     ],
     "entrypoints": {
