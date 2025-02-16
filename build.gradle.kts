@@ -36,9 +36,9 @@ description = "Mod that sometimes somehow block somewhat resembling clicking inv
 
 repositories {
     mavenCentral()
-    maven("https://maven.fabricmc.net/")
-    maven("https://maven.terraformersmc.com/releases/")
-    maven("https://maven.shedaniel.me/")
+    maven("https://maven.fabricmc.net/") // Fabric Loader and API.
+    maven("https://maven.terraformersmc.com/releases/") // ModMenu.
+    maven("https://maven.shedaniel.me/") // Cloth Config API.
 }
 
 loom {
