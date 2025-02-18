@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author VidTu
  */
+@ApiStatus.Internal
 public final class BSCFSIO implements ClientModInitializer {
     /**
      * Logger for this class.
@@ -64,7 +65,6 @@ public final class BSCFSIO implements ClientModInitializer {
     @NotNull
     private static final KeyMapping TOGGLE_BIND = new KeyMapping("bscfsio.key.toggle", GLFW.GLFW_KEY_UNKNOWN, "bscfsio.key.category");
 
-    @ApiStatus.Internal
     @Override
     public void onInitializeClient() {
         // Log.
@@ -96,10 +96,10 @@ public final class BSCFSIO implements ClientModInitializer {
             boolean newState = (BConfig.enabled = !BConfig.enabled);
 
             // Show the overlay and play the sound.
-            client.gui.setOverlayMessage(Component.translatable("bscfsio." + BConfig.enabled)
-                    .withStyle(BConfig.enabled ? ChatFormatting.GREEN : ChatFormatting.RED)
+            client.gui.setOverlayMessage(Component.translatable("bscfsio." + newState)
+                    .withStyle(newState ? ChatFormatting.GREEN : ChatFormatting.RED)
                     .withStyle(ChatFormatting.BOLD), false);
-            client.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_PLING, BConfig.enabled ? 2.0F : 0.0F));
+            client.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_PLING, newState ? 2.0F : 0.0F));
         });
 
         // Done.

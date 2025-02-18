@@ -160,7 +160,7 @@ public final class BConfig implements ConfigData {
         // Remove empty strings, they were probably accidental.
         items.removeIf(String::isBlank);
 
-        // Recalculate the cache.
+        // Recalculate the cache. God bless declarative programming!
         itemSet = Set.copyOf(items.stream()
                 .filter(Objects::nonNull)
                 .map(ResourceLocation::tryParse)

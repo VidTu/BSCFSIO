@@ -35,8 +35,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author VidTu
  */
+@ApiStatus.Internal
 public final class BModMenu implements ModMenuApi {
-    @ApiStatus.Internal
     @Contract(pure = true)
     @Override
     @NotNull
