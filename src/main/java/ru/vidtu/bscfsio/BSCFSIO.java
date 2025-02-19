@@ -24,7 +24,6 @@
 
 package ru.vidtu.bscfsio;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -36,6 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -94,11 +94,8 @@ public final class BSCFSIO implements ClientModInitializer {
             // Don't do anything if didn't click yet or if there's an open screen.
             if (!TOGGLE_BIND.consumeClick()) return;
 
-            // Toggle.
-            boolean newState = (BConfig.enabled = !BConfig.enabled);
-
-            // Save the config.
-            AutoConfig.getConfigHolder(BConfig.class).save();
+            // Toggle and save the config.
+            boolean newState = BConfig.toggle();
 
             // Show the overlay and play the sound.
             client.gui.setOverlayMessage(Component.translatable("bscfsio." + newState)
@@ -109,5 +106,12 @@ public final class BSCFSIO implements ClientModInitializer {
 
         // Done.
         LOGGER.info("BSCFSIO: Sometimes we somehow block somewhat resembling clicking inventory by someone. ({} ms)", (System.nanoTime() - start) / 1_000_000L);
+    }
+
+    @Contract(pure = true)
+    @Override
+    @NotNull
+    public String toString() {
+        return "BSCFSIO{}";
     }
 }

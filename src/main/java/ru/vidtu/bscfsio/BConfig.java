@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -37,13 +38,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,42 +58,49 @@ import java.util.function.Predicate;
 @Config(name = "bscfsio")
 public final class BConfig implements ConfigData {
     /**
-     * Whether the mod is enabled, {@code true} by default.
+     * Whether to enable the mod, {@code true} by default.
      */
     @ConfigEntry.Gui.Tooltip
-    public static boolean enabled = true;
+    private boolean enabled = true;
 
     /**
-     * Notify with sound, {@code true} by default.
+     * Whether to use a special sound when item movement is prohibited, {@code true} by default.
      */
     @ConfigEntry.Gui.Tooltip(count = 2)
-    public static boolean sound = true;
+    private boolean sound = true;
 
     /**
-     * Notify with visual overlay, {@code 250} by default.
+     * Time in milliseconds to display visual overlay when item movement is prohibited, {@code 250} by default.
+     * Set to {@code 0} to disable.
      */
     @ConfigEntry.Gui.Tooltip(count = 3)
     @ConfigEntry.BoundedDiscrete(max = 1000L)
-    public static long visual = 250L;
+    private long visual = 250L;
 
     /**
-     * Visual overlay color, {@code 0x80FF0000} by default.
+     * ARGB color of visual overlay, {@code 0x80FF0000} by default.
      */
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.ColorPicker(allowAlpha = true)
-    public static int visualColor = 0x80FF0000;
+    private int visualColor = 0x80FF0000;
 
     /**
-     * Prohibited items, {@code ["totem_of_undying"]} by default.
+     * List of item IDs to prohibit moving with shift-clicking, {@code ["totem_of_undying"]} by default. Unknown or
+     * empty IDs are silently ignored. Not used directly, cached into {@link #itemSet} via {@link #recacheItems()}.
+     *
+     * @see #itemSet
      */
     @ConfigEntry.Gui.Tooltip(count = 2)
-    public static List<String> items = new ArrayList<>(List.of("totem_of_undying"));
+    private List<String> items = new ArrayList<>(List.of("totem_of_undying"));
 
     /**
-     * Prohibited items, cached type. Not saved.
+     * List of item IDs to prohibit moving with shift-clicking, {@link Items#TOTEM_OF_UNDYING} by default.
+     * Not saved, cached from {@link #items} via {@link #recacheItems()}.
+     *
+     * @see #items
      */
     @ConfigEntry.Gui.Excluded
-    public static transient ImmutableSet<Item> itemSet = ImmutableSet.of(Items.TOTEM_OF_UNDYING);
+    private transient ImmutableSet<Item> itemSet = ImmutableSet.of(Items.TOTEM_OF_UNDYING);
 
     /**
      * Creates a new config.
@@ -114,30 +122,129 @@ public final class BConfig implements ConfigData {
     public static void init() {
         // Register the config.
         Gson gson = new GsonBuilder()
-                .excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.FINAL)
                 .setLenient()
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .create();
         AutoConfig.register(BConfig.class, (config, configClass) -> new GsonConfigSerializer<>(config, configClass, gson));
         AutoConfig.getConfigHolder(BConfig.class).registerLoadListener((holder, config) -> {
-            recacheItems();
+            config.recacheItems();
             return InteractionResult.SUCCESS;
         });
         AutoConfig.getConfigHolder(BConfig.class).registerSaveListener((holder, config) -> {
-            recacheItems();
+            config.recacheItems();
             return InteractionResult.SUCCESS;
         });
-
-        // Load the config.
-        AutoConfig.getConfigHolder(BConfig.class).getConfig();
     }
 
     /**
-     * Creates the config screen.
+     * Gets the enabled.
+     *
+     * @return Whether to enable the mod, {@code true} by default
+     */
+    @Contract(pure = true)
+    public boolean enabled() {
+        return this.enabled;
+    }
+
+    /**
+     * Gets the sound.
+     *
+     * @return Whether to use a special sound when item movement is prohibited, {@code true} by default
+     */
+    @Contract(pure = true)
+    public boolean sound() {
+        return this.sound;
+    }
+
+    /**
+     * Gets the visual.
+     *
+     * @return Time in milliseconds to display visual overlay when item movement is prohibited, {@code 250} by default. Set to {@code 0} to disable
+     */
+    @Contract(pure = true)
+    public long visual() {
+        return this.visual;
+    }
+
+    /**
+     * Gets the visual color.
+     *
+     * @return ARGB color of visual overlay, {@code 0x80FF0000} by default
+     */
+    @Contract(pure = true)
+    public int visualColor() {
+        return this.visualColor;
+    }
+
+    /**
+     * Gets whether the stack should be prohibited from moving.
+     *
+     * @param stack Stack to check
+     * @return Whether the stack is not empty and should be prohibited from moving
+     * @throws NullPointerException If {@code stack} is {@code null}
+     */
+    @Contract(pure = true)
+    public boolean isMovingProhibited(@NotNull ItemStack stack) {
+        return !stack.isEmpty() && !this.itemSet.contains(stack.getItem()); // Implicit NPE for 'stack'
+    }
+
+    /**
+     * Recalculates the item set.
+     */
+    private void recacheItems() {
+        // Remove null/empty/blank strings, they were probably accidental.
+        this.items.removeIf(s -> (s == null || s.isBlank()));
+
+        // Recalculate the cache.
+        this.itemSet = ImmutableSet.copyOf(this.items.stream()
+                .filter(Objects::nonNull)
+                .map(ResourceLocation::tryParse)
+                .filter(Objects::nonNull)
+                .map(BuiltInRegistries.ITEM::get)
+                .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
+                .collect(ImmutableSet.toImmutableSet()));
+    }
+
+    @Contract(pure = true)
+    @Override
+    @NotNull
+    public String toString() {
+        return "BSCFSIO/BConfig{" +
+                "enabled=" + this.enabled +
+                ", sound=" + this.sound +
+                ", visual=" + this.visual +
+                ", visualColor=" + this.visualColor +
+                ", items=" + this.items +
+                ", itemSet=" + this.itemSet +
+                '}';
+    }
+
+    /**
+     * Gets the current config. The instance is ephemeral, it might change in the future.
+     * The config <b>MUST</b> be loaded.
+     *
+     * @return Current config instance
+     * @throws RuntimeException If the config is not loaded via {@link #init()}
+     * @see #init()
+     * @see #createScreen(Screen)
+     * @see #toggle()
+     */
+    @Contract(pure = true)
+    @NotNull
+    public static BConfig get() {
+        return AutoConfig.getConfigHolder(BConfig.class).getConfig();
+    }
+
+    /**
+     * Creates the config screen. The config <b>MUST</b> be loaded.
      *
      * @param parent Config screen parent, {@code null} if none
      * @return Created config screen
+     * @throws RuntimeException If the config is not loaded via {@link #init()}
+     * @see #init()
+     * @see #get()
+     * @see #toggle()
      */
     @CheckReturnValue
     @NotNull
@@ -146,19 +253,27 @@ public final class BConfig implements ConfigData {
     }
 
     /**
-     * Recalculates the item set.
+     * Toggles the {@link #enabled()} state and saves the config. The config <b>MUST</b> be loaded.
+     *
+     * @throws RuntimeException If the config is not loaded via {@link #init()}
+     * @return New {@link #enabled()} state
+     * @see #init()
+     * @see #get()
+     * @see #createScreen(Screen)
      */
-    private static void recacheItems() {
-        // Remove null/empty/blank strings, they were probably accidental.
-        items.removeIf(s -> (s == null || s.isBlank()));
+    public static boolean toggle() {
+        // Get the config.
+        ConfigHolder<BConfig> holder = AutoConfig.getConfigHolder(BConfig.class);
+        BConfig config = holder.getConfig();
 
-        // Recalculate the cache.
-        itemSet = ImmutableSet.copyOf(items.stream()
-                .filter(Objects::nonNull)
-                .map(ResourceLocation::tryParse)
-                .filter(Objects::nonNull)
-                .map(BuiltInRegistries.ITEM::get)
-                .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
-                .collect(ImmutableSet.toImmutableSet()));
+        // Toggle the state.
+        boolean newState = (config.enabled = !config.enabled);
+
+        // Save the config.
+        holder.setConfig(config); // Redundant, actually.
+        holder.save();
+
+        // Return the state.
+        return newState;
     }
 }

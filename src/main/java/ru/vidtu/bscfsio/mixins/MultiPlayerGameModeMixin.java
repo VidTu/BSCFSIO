@@ -66,8 +66,12 @@ public final class MultiPlayerGameModeMixin {
 
     @Inject(method = "handleInventoryMouseClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;clicked(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V", shift = At.Shift.BEFORE), cancellable = true)
     public void bscfsio_handleInventoryMouseClick_clicked(int window, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
-        // Skip if click is not shift-click or the mod is disabled.
-        if (click != ClickType.QUICK_MOVE || !BConfig.enabled) return;
+        // Skip if click is not shift-click.
+        if (click != ClickType.QUICK_MOVE) return;
+
+        // Skip if the mod is disabled.
+        BConfig config = BConfig.get();
+        if (!config.enabled()) return;
 
         // Skip if click is out of bounds.
         NonNullList<Slot> items = player.containerMenu.slots;
@@ -76,17 +80,20 @@ public final class MultiPlayerGameModeMixin {
         // Skip if item is empty or is not immovable.
         Slot clicked = items.get(slot);
         ItemStack stack = clicked.getItem();
-        if (stack.isEmpty() || !BConfig.itemSet.contains(stack.getItem())) return;
+        if (!config.isMovingProhibited(stack)) return;
 
         // Cancel the moving.
         ci.cancel();
 
-        // Process the sound effect and visual overlay, if enabled.
-        if (BConfig.sound) {
+        // Process the sound effect, if enabled.
+        if (config.sound()) {
             this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PIG_AMBIENT, 1.0F));
         }
-        if (BConfig.visual > 0) {
-            ((BSlot) clicked).bscfsio_renderOverlayUntil(System.nanoTime() + BConfig.visual * 1_000_000L);
+
+        // Process the visual overlay, if enabled.
+        long visual = config.visual();
+        if (visual > 0) {
+            ((BSlot) clicked).bscfsio_renderOverlayUntil(System.nanoTime() + (visual * 1_000_000L));
         }
     }
 }

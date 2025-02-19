@@ -43,4 +43,11 @@ public final class BModMenu implements ModMenuApi {
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return BConfig::createScreen;
     }
+
+    @Contract(pure = true)
+    @Override
+    @NotNull
+    public String toString() {
+        return "BSCFSIO/BModMenu";
+    }
 }
