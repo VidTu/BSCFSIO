@@ -48,7 +48,9 @@ public final class AbstractContainerScreenMixin extends Screen {
      * An instance of this class cannot be created.
      *
      * @throws AssertionError Always
+     * @deprecated Always throws
      */
+    @Deprecated(forRemoval = true)
     @Contract(value = "-> fail", pure = true)
     private AbstractContainerScreenMixin() {
         super(null);

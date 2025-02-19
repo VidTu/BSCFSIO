@@ -69,6 +69,7 @@ public final class BSCFSIO implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // Log.
+        long start = System.nanoTime();
         LOGGER.info("BSCFSIO: Loading...");
 
         // Load the config.
@@ -107,6 +108,6 @@ public final class BSCFSIO implements ClientModInitializer {
         });
 
         // Done.
-        LOGGER.info("BSCFSIO: Sometimes we somehow block somewhat resembling clicking inventory by someone.");
+        LOGGER.info("BSCFSIO: Sometimes we somehow block somewhat resembling clicking inventory by someone. ({} ms)", (System.nanoTime() - start) / 1_000_000L);
     }
 }

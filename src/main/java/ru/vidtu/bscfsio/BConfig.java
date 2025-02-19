@@ -24,6 +24,7 @@
 
 package ru.vidtu.bscfsio;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -42,14 +43,11 @@ import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * BSCFSIO config.
@@ -94,13 +92,7 @@ public final class BConfig implements ConfigData {
      * Prohibited items, cached type. Not saved.
      */
     @ConfigEntry.Gui.Excluded
-    public static transient Set<Item> itemSet = Set.copyOf(items.stream()
-            .filter(Objects::nonNull)
-            .map(ResourceLocation::tryParse)
-            .filter(Objects::nonNull)
-            .map(BuiltInRegistries.ITEM::get)
-            .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
-            .collect(Collectors.toUnmodifiableSet()));
+    public static transient ImmutableSet<Item> itemSet = ImmutableSet.of(Items.TOTEM_OF_UNDYING);
 
     /**
      * Creates a new config.
@@ -157,16 +149,16 @@ public final class BConfig implements ConfigData {
      * Recalculates the item set.
      */
     private static void recacheItems() {
-        // Remove empty strings, they were probably accidental.
-        items.removeIf(String::isBlank);
+        // Remove null/empty/blank strings, they were probably accidental.
+        items.removeIf(s -> (s == null || s.isBlank()));
 
-        // Recalculate the cache. God bless declarative programming!
-        itemSet = Set.copyOf(items.stream()
+        // Recalculate the cache.
+        itemSet = ImmutableSet.copyOf(items.stream()
                 .filter(Objects::nonNull)
                 .map(ResourceLocation::tryParse)
                 .filter(Objects::nonNull)
                 .map(BuiltInRegistries.ITEM::get)
                 .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
-                .collect(Collectors.toUnmodifiableSet()));
+                .collect(ImmutableSet.toImmutableSet()));
     }
 }

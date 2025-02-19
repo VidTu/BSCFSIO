@@ -47,7 +47,9 @@ public final class SlotMixin implements BSlot {
      * An instance of this class cannot be created.
      *
      * @throws AssertionError Always
+     * @deprecated Always throws
      */
+    @Deprecated(forRemoval = true)
     @Contract(value = "-> fail", pure = true)
     private SlotMixin() {
         throw new AssertionError("No instances.");
