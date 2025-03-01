@@ -86,7 +86,7 @@ public final class BConfig implements ConfigData {
 
     /**
      * List of item IDs to prohibit moving with shift-clicking, {@code ["totem_of_undying"]} by default. Unknown or
-     * empty IDs are silently ignored. Not used directly, cached into {@link #itemSet} via {@link #recacheItems()}.
+     * empty IDs are silently ignored. Not used directly, cached into {@link #itemSet} via {@link #validatePostLoad()}.
      *
      * @see #itemSet
      */
@@ -95,7 +95,7 @@ public final class BConfig implements ConfigData {
 
     /**
      * List of item IDs to prohibit moving with shift-clicking, {@link Items#TOTEM_OF_UNDYING} by default.
-     * Not saved, cached from {@link #items} via {@link #recacheItems()}.
+     * Not saved, cached from {@link #items} via {@link #validatePostLoad()}.
      *
      * @see #items
      */
@@ -110,10 +110,23 @@ public final class BConfig implements ConfigData {
         // Private
     }
 
+    /**
+     * Recalculates the item set.
+     */
     @ApiStatus.Internal
     @Override
     public void validatePostLoad() {
-        recacheItems();
+        // Remove null/empty/blank strings, they were probably accidental.
+        this.items.removeIf(s -> (s == null || s.isBlank()));
+
+        // Recalculate the cache.
+        this.itemSet = ImmutableSet.copyOf(this.items.stream()
+                .filter(Objects::nonNull)
+                .map(ResourceLocation::tryParse)
+                .filter(Objects::nonNull)
+                .map(BuiltInRegistries.ITEM::get)
+                .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
+                .collect(ImmutableSet.toImmutableSet()));
     }
 
     /**
@@ -128,11 +141,11 @@ public final class BConfig implements ConfigData {
                 .create();
         AutoConfig.register(BConfig.class, (config, configClass) -> new GsonConfigSerializer<>(config, configClass, gson));
         AutoConfig.getConfigHolder(BConfig.class).registerLoadListener((holder, config) -> {
-            config.recacheItems();
+            config.validatePostLoad();
             return InteractionResult.SUCCESS;
         });
         AutoConfig.getConfigHolder(BConfig.class).registerSaveListener((holder, config) -> {
-            config.recacheItems();
+            config.validatePostLoad();
             return InteractionResult.SUCCESS;
         });
     }
@@ -187,23 +200,6 @@ public final class BConfig implements ConfigData {
     @Contract(pure = true)
     public boolean isMovingProhibited(@NotNull ItemStack stack) {
         return !stack.isEmpty() && !this.itemSet.contains(stack.getItem()); // Implicit NPE for 'stack'
-    }
-
-    /**
-     * Recalculates the item set.
-     */
-    private void recacheItems() {
-        // Remove null/empty/blank strings, they were probably accidental.
-        this.items.removeIf(s -> (s == null || s.isBlank()));
-
-        // Recalculate the cache.
-        this.itemSet = ImmutableSet.copyOf(this.items.stream()
-                .filter(Objects::nonNull)
-                .map(ResourceLocation::tryParse)
-                .filter(Objects::nonNull)
-                .map(BuiltInRegistries.ITEM::get)
-                .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
-                .collect(ImmutableSet.toImmutableSet()));
     }
 
     @Contract(pure = true)
