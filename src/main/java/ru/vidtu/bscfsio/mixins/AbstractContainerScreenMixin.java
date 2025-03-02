@@ -30,6 +30,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,6 +44,7 @@ import ru.vidtu.bscfsio.BSlot;
  * @author VidTu
  */
 @Mixin(AbstractContainerScreen.class)
+@NullMarked
 public final class AbstractContainerScreenMixin extends Screen {
     /**
      * An instance of this class cannot be created.

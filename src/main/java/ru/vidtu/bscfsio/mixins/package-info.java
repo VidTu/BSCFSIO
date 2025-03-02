@@ -22,49 +22,12 @@
  * SOFTWARE.
  */
 
-package ru.vidtu.bscfsio.mixins;
-
-import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NullMarked;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import ru.vidtu.bscfsio.BSlot;
-
 /**
- * Mixin that extends {@link Slot} with {@link BSlot}.
+ * BSCFSIO package with mixins to inject.
  *
  * @author VidTu
  */
-@Mixin(Slot.class)
 @NullMarked
-public final class SlotMixin implements BSlot {
-    /**
-     * Time at which rendering the overlay should be stopped.
-     */
-    @Unique
-    private long bscfsio_renderOverlayUntil = System.nanoTime();
+package ru.vidtu.bscfsio.mixins;
 
-    /**
-     * An instance of this class cannot be created.
-     *
-     * @throws AssertionError Always
-     * @deprecated Always throws
-     */
-    @Deprecated(forRemoval = true)
-    @Contract(value = "-> fail", pure = true)
-    private SlotMixin() {
-        throw new AssertionError("No instances.");
-    }
-
-    @Contract(pure = true)
-    @Override
-    public long bscfsio_renderOverlayUntil() {
-        return this.bscfsio_renderOverlayUntil;
-    }
-
-    @Override
-    public void bscfsio_renderOverlayUntil(long time) {
-        this.bscfsio_renderOverlayUntil = time;
-    }
-}
+import org.jspecify.annotations.NullMarked;

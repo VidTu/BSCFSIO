@@ -65,6 +65,10 @@ loom {
 }
 
 dependencies {
+    // Annotations
+    compileOnly(libs.jspecify)
+    compileOnly(libs.jetbrains.annotations)
+
     // Minecraft
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())

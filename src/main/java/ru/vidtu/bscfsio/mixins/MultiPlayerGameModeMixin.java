@@ -34,6 +34,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,6 +50,7 @@ import ru.vidtu.bscfsio.BSlot;
  * @author VidTu
  */
 @Mixin(MultiPlayerGameMode.class)
+@NullMarked
 public final class MultiPlayerGameModeMixin {
     @Shadow @Final private Minecraft minecraft;
 

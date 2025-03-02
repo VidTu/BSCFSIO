@@ -35,8 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,23 +46,21 @@ import org.slf4j.LoggerFactory;
  * @author VidTu
  */
 @ApiStatus.Internal
+@NullMarked
 public final class BSCFSIO implements ClientModInitializer {
     /**
      * Logger for this class.
      */
-    @NotNull
     private static final Logger LOGGER = LoggerFactory.getLogger("BSCFSIO");
 
     /**
      * Config keybind. Not bound by default.
      */
-    @NotNull
     private static final KeyMapping CONFIG_BIND = new KeyMapping("bscfsio.key.config", GLFW.GLFW_KEY_UNKNOWN, "bscfsio.key.category");
 
     /**
      * Toggle keybind. Not bound by default.
      */
-    @NotNull
     private static final KeyMapping TOGGLE_BIND = new KeyMapping("bscfsio.key.toggle", GLFW.GLFW_KEY_UNKNOWN, "bscfsio.key.category");
 
     @Override
@@ -85,7 +82,7 @@ public final class BSCFSIO implements ClientModInitializer {
             if (!CONFIG_BIND.consumeClick() || client.screen != null) return;
 
             // Open the config screen.
-            client.setScreen(BConfig.createScreen(null));
+            client.setScreen(BConfig.createScreen(/*parent=*/null));
         });
 
         // Register the toggle bind.
@@ -100,18 +97,11 @@ public final class BSCFSIO implements ClientModInitializer {
             // Show the overlay and play the sound.
             client.gui.setOverlayMessage(Component.translatable("bscfsio." + newState)
                     .withStyle(newState ? ChatFormatting.GREEN : ChatFormatting.RED)
-                    .withStyle(ChatFormatting.BOLD), false);
+                    .withStyle(ChatFormatting.BOLD), /*rainbow=*/false);
             client.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_PLING, newState ? 2.0F : 0.0F));
         });
 
         // Done.
         LOGGER.info("BSCFSIO: Sometimes we somehow block somewhat resembling clicking inventory by someone. ({} ms)", (System.nanoTime() - start) / 1_000_000L);
-    }
-
-    @Contract(pure = true)
-    @Override
-    @NotNull
-    public String toString() {
-        return "BSCFSIO{}";
     }
 }

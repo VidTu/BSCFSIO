@@ -43,8 +43,10 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,7 +57,9 @@ import java.util.function.Predicate;
  *
  * @author VidTu
  */
+@ApiStatus.Internal
 @Config(name = "bscfsio")
+@NullMarked
 public final class BConfig implements ConfigData {
     /**
      * Whether to enable the mod, {@code true} by default.
@@ -91,7 +95,7 @@ public final class BConfig implements ConfigData {
      * @see #itemSet
      */
     @ConfigEntry.Gui.Tooltip(count = 2)
-    private List<String> items = new ArrayList<>(List.of("totem_of_undying"));
+    private List<@Nullable String> items = new ArrayList<>(List.of("totem_of_undying"));
 
     /**
      * List of item IDs to prohibit moving with shift-clicking, {@link Items#TOTEM_OF_UNDYING} by default.
@@ -100,6 +104,7 @@ public final class BConfig implements ConfigData {
      * @see #items
      */
     @ConfigEntry.Gui.Excluded
+    @Unmodifiable
     private transient ImmutableSet<Item> itemSet = ImmutableSet.of(Items.TOTEM_OF_UNDYING);
 
     /**
@@ -119,7 +124,7 @@ public final class BConfig implements ConfigData {
         // Remove null/empty/blank strings, they were probably accidental.
         this.items.removeIf(s -> (s == null || s.isBlank()));
 
-        // Recalculate the cache.
+        // Recalculate the cache. Ignore invalid/null items.
         this.itemSet = ImmutableSet.copyOf(this.items.stream()
                 .filter(Objects::nonNull)
                 .map(ResourceLocation::tryParse)
@@ -194,17 +199,15 @@ public final class BConfig implements ConfigData {
      * Gets whether the stack should be prohibited from moving.
      *
      * @param stack Stack to check
-     * @return Whether the stack is not empty and should be prohibited from moving
-     * @throws NullPointerException If {@code stack} is {@code null}
+     * @return Whether the stack is not  {@code null}, not empty, and should be prohibited from moving
      */
     @Contract(pure = true)
-    public boolean isMovingProhibited(@NotNull ItemStack stack) {
-        return !stack.isEmpty() && !this.itemSet.contains(stack.getItem()); // Implicit NPE for 'stack'
+    public boolean isMovingProhibited(@Nullable ItemStack stack) {
+        return stack != null && !stack.isEmpty() && !this.itemSet.contains(stack.getItem());
     }
 
     @Contract(pure = true)
     @Override
-    @NotNull
     public String toString() {
         return "BSCFSIO/BConfig{" +
                 "enabled=" + this.enabled +
@@ -227,7 +230,6 @@ public final class BConfig implements ConfigData {
      * @see #toggle()
      */
     @Contract(pure = true)
-    @NotNull
     public static BConfig get() {
         return AutoConfig.getConfigHolder(BConfig.class).getConfig();
     }
@@ -243,7 +245,6 @@ public final class BConfig implements ConfigData {
      * @see #toggle()
      */
     @CheckReturnValue
-    @NotNull
     public static Screen createScreen(@Nullable Screen parent) {
         return AutoConfig.getConfigScreen(BConfig.class, parent).get();
     }

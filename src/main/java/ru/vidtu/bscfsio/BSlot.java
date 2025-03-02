@@ -26,12 +26,14 @@ package ru.vidtu.bscfsio;
 
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Extension for {@link Slot}.
  *
  * @author VidTu
  */
+@NullMarked
 public interface BSlot {
     /**
      * Gets the time at which rendering the overlay should be stopped.

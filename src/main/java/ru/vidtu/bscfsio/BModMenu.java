@@ -28,7 +28,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * BSCFSIO compat with ModMenu.
@@ -36,18 +36,11 @@ import org.jetbrains.annotations.NotNull;
  * @author VidTu
  */
 @ApiStatus.Internal
+@NullMarked
 public final class BModMenu implements ModMenuApi {
     @Contract(pure = true)
     @Override
-    @NotNull
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return BConfig::createScreen;
-    }
-
-    @Contract(pure = true)
-    @Override
-    @NotNull
-    public String toString() {
-        return "BSCFSIO/BModMenu";
     }
 }
