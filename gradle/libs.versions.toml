@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 [versions]
-architectury-loom = "1.9.428"
+architectury-loom = "1.10.430"
 cloth-config = "11.1.136"
 fabric-api = "0.92.5+1.20.1"
 fabric-loader = "0.16.10"
