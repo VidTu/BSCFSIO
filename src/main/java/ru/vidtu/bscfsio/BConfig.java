@@ -25,6 +25,7 @@
 package ru.vidtu.bscfsio;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -46,11 +47,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * BSCFSIO config.
@@ -61,6 +65,11 @@ import java.util.function.Predicate;
 @Config(name = "bscfsio")
 @NullMarked
 public final class BConfig implements ConfigData {
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger("BSCFSIO/BConfig");
+
     /**
      * Whether to enable the mod, {@code true} by default.
      */
@@ -95,7 +104,7 @@ public final class BConfig implements ConfigData {
      * @see #itemSet
      */
     @ConfigEntry.Gui.Tooltip(count = 2)
-    private List<@Nullable String> items = new ArrayList<>(List.of("totem_of_undying"));
+    private List<@Nullable String> items = Lists.newArrayList("totem_of_undying");
 
     /**
      * List of item IDs to prohibit moving with shift-clicking, {@link Items#TOTEM_OF_UNDYING} by default.
@@ -121,23 +130,31 @@ public final class BConfig implements ConfigData {
     @ApiStatus.Internal
     @Override
     public void validatePostLoad() {
-        // Remove null/empty/blank strings, they were probably accidental.
-        this.items.removeIf(s -> (s == null || s.isBlank()));
+        // Remove null/empty/blank/duplicate strings, they were probably accidental.
+        this.items = this.items.stream()
+                .filter(Objects::nonNull)
+                .map(String::strip)
+                .filter(Predicate.not(String::isBlank))
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
 
         // Recalculate the cache. Ignore invalid/null items.
-        this.itemSet = ImmutableSet.copyOf(this.items.stream()
+        this.itemSet = this.items.stream()
                 .filter(Objects::nonNull)
                 .map(ResourceLocation::tryParse)
                 .filter(Objects::nonNull)
                 .map(BuiltInRegistries.ITEM::get)
                 .filter(Predicate.not(Predicate.isEqual(Items.AIR)))
-                .collect(ImmutableSet.toImmutableSet()));
+                .collect(ImmutableSet.toImmutableSet());
     }
 
     /**
      * Registers and loads the config.
      */
-    public static void init() {
+    static void init() {
+        // Log. (**DEBUG**)
+        LOGGER.debug("BSCFSIO: Loading config...");
+
         // Register the config.
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -153,6 +170,9 @@ public final class BConfig implements ConfigData {
             config.validatePostLoad();
             return InteractionResult.SUCCESS;
         });
+
+        // Log. (**DEBUG**)
+        LOGGER.debug("BSCFSIO: Config loaded.");
     }
 
     /**
@@ -199,11 +219,11 @@ public final class BConfig implements ConfigData {
      * Gets whether the stack should be prohibited from moving.
      *
      * @param stack Stack to check
-     * @return Whether the stack is not  {@code null}, not empty, and should be prohibited from moving
+     * @return Whether the stack is not {@code null}, not empty, and should be prohibited from moving
      */
     @Contract(pure = true)
     public boolean isMovingProhibited(@Nullable ItemStack stack) {
-        return stack != null && !stack.isEmpty() && !this.itemSet.contains(stack.getItem());
+        return ((stack != null) && !stack.isEmpty() && this.itemSet.contains(stack.getItem()));
     }
 
     @Contract(pure = true)
@@ -245,7 +265,7 @@ public final class BConfig implements ConfigData {
      * @see #toggle()
      */
     @CheckReturnValue
-    public static Screen createScreen(@Nullable Screen parent) {
+    static Screen createScreen(@Nullable Screen parent) {
         return AutoConfig.getConfigScreen(BConfig.class, parent).get();
     }
 
@@ -258,7 +278,10 @@ public final class BConfig implements ConfigData {
      * @see #get()
      * @see #createScreen(Screen)
      */
-    public static boolean toggle() {
+    static boolean toggle() {
+        // Log. (**DEBUG**)
+        LOGGER.debug("BSCFSIO: Toggling via keybind...");
+
         // Get the config.
         ConfigHolder<BConfig> holder = AutoConfig.getConfigHolder(BConfig.class);
         BConfig config = holder.getConfig();
@@ -269,6 +292,9 @@ public final class BConfig implements ConfigData {
         // Save the config.
         holder.setConfig(config); // Redundant, actually.
         holder.save();
+
+        // Log. (**DEBUG**)
+        LOGGER.debug("BSCFSIO: Toggled to {} via keybind.", newState);
 
         // Return the state.
         return newState;

@@ -42,6 +42,7 @@ repositories {
 }
 
 loom {
+    log4jConfigs.setFrom("log4j2.xml")
     silentMojangMappingsLicense()
     runs.named("client") {
         vmArgs(
@@ -58,7 +59,7 @@ loom {
             "-Dfabric.debug.disableClassPathIsolation=true"
         )
     }
-    @Suppress("UnstableApiUsage")
+    @Suppress("UnstableApiUsage") // <- I want the fancy refmap name. It's completely optional and can be removed anytime.
     mixin {
         defaultRefmapName = "bscfsio.mixins.refmap.json"
     }

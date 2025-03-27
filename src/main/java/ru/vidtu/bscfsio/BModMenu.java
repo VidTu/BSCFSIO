@@ -38,6 +38,14 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Internal
 @NullMarked
 public final class BModMenu implements ModMenuApi {
+    /**
+     * Creates a new ModMenu compat layer.
+     */
+    @Contract(pure = true)
+    public BModMenu() {
+        // Empty
+    }
+
     @Contract(pure = true)
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {

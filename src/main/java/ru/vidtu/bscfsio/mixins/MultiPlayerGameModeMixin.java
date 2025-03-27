@@ -35,9 +35,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
+import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -52,7 +56,18 @@ import ru.vidtu.bscfsio.BSlot;
 @Mixin(MultiPlayerGameMode.class)
 @NullMarked
 public final class MultiPlayerGameModeMixin {
-    @Shadow @Final private Minecraft minecraft;
+    /**
+     * Logger for this class.
+     */
+    @Unique
+    private static final Logger BSCFSIO_LOGGER = LoggerFactory.getLogger("BSCFSIO/MultiPlayerGameModeMixin");
+
+    /**
+     * A minecraft client instance shadow.
+     */
+    @Shadow
+    @Final
+    private final Minecraft minecraft = Minecraft.getInstance();
 
     /**
      * An instance of this class cannot be created.
@@ -66,23 +81,63 @@ public final class MultiPlayerGameModeMixin {
         throw new AssertionError("No instances.");
     }
 
-    @Inject(method = "handleInventoryMouseClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;clicked(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V", shift = At.Shift.BEFORE), cancellable = true)
-    public void bscfsio_handleInventoryMouseClick_clicked(int window, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
+    /**
+     * Handles (and cancels if needed) the click.
+     *
+     * @param container Container ID, ignored
+     * @param slot      Slot ID, used to retrieve the clicked item
+     * @param button    Button ID, ignored
+     * @param click     Click type, the mod handles only {@link ClickType#QUICK_MOVE}
+     * @param player    Player clicked the slot, used to retrieve the clicked item
+     * @param ci        Callback data, used to cancel the click
+     */
+    @Inject(method = "handleInventoryMouseClick", at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;slots:Lnet/minecraft/core/NonNullList;", opcode = Opcodes.GETFIELD), cancellable = true)
+    private void bscfsio_handleInventoryMouseClick_slots(int container, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
+        // Log. (**TRACE**)
+        if (BSCFSIO_LOGGER.isTraceEnabled()) {
+            BSCFSIO_LOGGER.trace("BSCFSIO: Handling inventory mouse click. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {})", container, slot, button, click, player, ci, this);
+        }
+
         // Skip if click is not shift-click.
-        if (click != ClickType.QUICK_MOVE) return;
+        if (click != ClickType.QUICK_MOVE) {
+            // Log, stop. (**TRACE**)
+            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
+            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because click != QUICK_MOVE. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {})", container, slot, button, click, player, ci, this);
+            return;
+        }
 
         // Skip if the mod is disabled.
         BConfig config = BConfig.get();
-        if (!config.enabled()) return;
+        if (!config.enabled()) {
+            // Log, stop. (**TRACE**)
+            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
+            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the mod is not enabled. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {})", container, slot, button, click, player, ci, this, config);
+            return;
+        }
 
         // Skip if click is out of bounds.
         NonNullList<Slot> items = player.containerMenu.slots;
-        if (slot < 0 || slot >= items.size()) return;
+        if ((slot < 0) || (slot >= items.size())) {
+            // Log, stop. (**TRACE**)
+            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
+            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the slot is out out bounds. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, itemsSize: {})", container, slot, button, click, player, ci, this, config, items, items.size());
+            return;
+        }
 
         // Skip if item is empty or is not immovable.
-        Slot clicked = items.get(slot);
-        ItemStack stack = clicked.getItem();
-        if (!config.isMovingProhibited(stack)) return;
+        Slot clickedSlot = items.get(slot);
+        ItemStack stack = clickedSlot.getItem();
+        if (!config.isMovingProhibited(stack)) {
+            // Log, stop. (**TRACE**)
+            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
+            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the moved item is allowed to be moved. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, clickedSlot: {}, stack: {})", container, slot, button, click, player, ci, this, config, items, clickedSlot, stack);
+            return;
+        }
+
+        // Log. (**DEBUG**)
+        if (BSCFSIO_LOGGER.isDebugEnabled()) {
+            BSCFSIO_LOGGER.debug("BSCFSIO: Preventing from moving item via quick mouse move. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, clickedSlot: {}, stack: {})", container, slot, button, click, player, ci, this, config, items, clickedSlot, stack);
+        }
 
         // Cancel the moving.
         ci.cancel();
@@ -94,8 +149,8 @@ public final class MultiPlayerGameModeMixin {
 
         // Process the visual overlay, if enabled.
         long visual = config.visual();
-        if (visual > 0) {
-            ((BSlot) clicked).bscfsio_renderOverlayUntil(System.nanoTime() + (visual * 1_000_000L));
+        if (visual > 0L) {
+            ((BSlot) clickedSlot).bscfsio_renderOverlayUntil(System.nanoTime() + (visual * 1_000_000L));
         }
     }
 }

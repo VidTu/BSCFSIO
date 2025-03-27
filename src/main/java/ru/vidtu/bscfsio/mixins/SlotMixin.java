@@ -24,11 +24,17 @@
 
 package ru.vidtu.bscfsio.mixins;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.vidtu.bscfsio.BSlot;
 
 /**
@@ -40,10 +46,16 @@ import ru.vidtu.bscfsio.BSlot;
 @NullMarked
 public final class SlotMixin implements BSlot {
     /**
-     * Time at which rendering the overlay should be stopped.
+     * Logger for this class.
      */
     @Unique
-    private long bscfsio_renderOverlayUntil = System.nanoTime();
+    private static final Logger BSCFSIO_LOGGER = LoggerFactory.getLogger("BSCFSIO/SlotMixin");
+
+    /**
+     * Time when overlay rendering should be stopped. (in units of {@link System#nanoTime()})
+     */
+    @Unique
+    private long bscfsio_renderOverlayUntil;
 
     /**
      * An instance of this class cannot be created.
@@ -57,6 +69,21 @@ public final class SlotMixin implements BSlot {
         throw new AssertionError("No instances.");
     }
 
+    /**
+     * Sets the {@link #bscfsio_renderOverlayUntil()} value to current
+     * time to avoid overflow-caused permanent rendering.
+     *
+     * @param container Slot container, ignored
+     * @param slot      Slot index, ignored
+     * @param x         Slot X position, ignored
+     * @param y         Slot Y position, ignored
+     * @param ci        Callback data, ignored
+     */
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void bscfsio_init_return(Container container, int slot, int x, int y, CallbackInfo ci) {
+        this.bscfsio_renderOverlayUntil = System.nanoTime();
+    }
+
     @Contract(pure = true)
     @Override
     public long bscfsio_renderOverlayUntil() {
@@ -65,6 +92,12 @@ public final class SlotMixin implements BSlot {
 
     @Override
     public void bscfsio_renderOverlayUntil(long time) {
+        // Log. (**DEBUG**)
+        if (BSCFSIO_LOGGER.isDebugEnabled()) {
+            BSCFSIO_LOGGER.debug("BSCFSIO: Setting slot to render overlay. (time: {}, slot: {})", time, this);
+        }
+
+        // Set.
         this.bscfsio_renderOverlayUntil = time;
     }
 }

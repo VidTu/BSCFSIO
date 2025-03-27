@@ -36,7 +36,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface BSlot {
     /**
-     * Gets the time at which rendering the overlay should be stopped.
+     * Gets the time when overlay rendering should be stopped.
      *
      * @return Time to stop rendering (in units of {@link System#nanoTime()})
      */
@@ -44,7 +44,7 @@ public interface BSlot {
     long bscfsio_renderOverlayUntil();
 
     /**
-     * Sets the time at which rendering the overlay should be stopped
+     * Sets the time when overlay rendering should be stopped.
      *
      * @param time Time to stop rendering (in units of {@link System#nanoTime()})
      */

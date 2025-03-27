@@ -35,6 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -63,6 +64,14 @@ public final class BSCFSIO implements ClientModInitializer {
      */
     private static final KeyMapping TOGGLE_BIND = new KeyMapping("bscfsio.key.toggle", GLFW.GLFW_KEY_UNKNOWN, "bscfsio.key.category");
 
+    /**
+     * Creates a new mod.
+     */
+    @Contract(pure = true)
+    public BSCFSIO() {
+        // Empty
+    }
+
     @Override
     public void onInitializeClient() {
         // Log.
@@ -79,7 +88,7 @@ public final class BSCFSIO implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(CONFIG_BIND);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // Don't do anything if didn't click yet or if there's an open screen.
-            if (!CONFIG_BIND.consumeClick() || client.screen != null) return;
+            if (!CONFIG_BIND.consumeClick() || (client.screen != null)) return;
 
             // Open the config screen.
             client.setScreen(BConfig.createScreen(/*parent=*/null));

@@ -59,11 +59,19 @@ public final class AbstractContainerScreenMixin extends Screen {
         throw new AssertionError("No instances.");
     }
 
+    /**
+     * Renders the slot overlay, if needed.
+     *
+     * @param graphics Graphics to render the overlay with
+     * @param slot     Slot to render the overlay of
+     * @param ci       Callback data, ignored
+     */
+    @SuppressWarnings("MethodMayBeStatic") // <- Mixin injector.
     @Inject(method = "renderSlot", at = @At("TAIL"))
-    public void bscfsio_renderSlot_tail(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
+    private void bscfsio_renderSlot_tail(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
         // Skip if visual overlay is disabled.
         BConfig config = BConfig.get();
-        if (config.visual() <= 0) return;
+        if (config.visual() <= 0L) return;
 
         // Skip if overlay has expired.
         long time = ((BSlot) slot).bscfsio_renderOverlayUntil();
