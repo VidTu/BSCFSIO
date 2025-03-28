@@ -28,6 +28,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
@@ -67,18 +68,35 @@ public final class AbstractContainerScreenMixin extends Screen {
      * @param slot     Slot to render the overlay of
      * @param ci       Callback data, ignored
      */
-    @SuppressWarnings("MethodMayBeStatic") // <- Mixin injector.
     @Inject(method = "renderSlot", at = @At("TAIL"))
     private void bscfsio_renderSlot_tail(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
+        // Validate.
+        assert this.minecraft != null : "Minecraft is null at rendering slot. (graphics: " + graphics + ", slot: " + slot + ", screen: " + this + ", ci: " + ci + ')';
+
+        // Push the profiler.
+        ProfilerFiller profiler = this.minecraft.getProfiler(); // Implicit NPE for 'minecraft'
+        profiler.push("bscfsio:render_slot_overlay");
+
         // Skip if visual overlay is disabled.
         BConfig config = BConfig.get();
-        if (config.visual() <= 0L) return;
+        if (config.visual() <= 0L) {
+            // Pop, stop.
+            profiler.pop();
+            return;
+        }
 
         // Skip if overlay has expired.
         long time = ((BSlot) slot).bscfsio_renderOverlayUntil();
-        if (System.nanoTime() >= time) return;
+        if (System.nanoTime() >= time) {
+            // Pop, stop.
+            profiler.pop();
+            return;
+        }
 
         // Render the overlay.
         graphics.fill(RenderType.guiOverlay(), slot.x, slot.y, slot.x + 16, slot.y + 16, config.visualColor());
+
+        // Pop the profiler.
+        profiler.pop();
     }
 }

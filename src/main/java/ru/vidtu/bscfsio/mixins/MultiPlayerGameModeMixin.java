@@ -29,6 +29,7 @@ import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -94,6 +95,10 @@ public final class MultiPlayerGameModeMixin {
      */
     @Inject(method = "handleInventoryMouseClick", at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;slots:Lnet/minecraft/core/NonNullList;", opcode = Opcodes.GETFIELD), cancellable = true)
     private void bscfsio_handleInventoryMouseClick_slots(int container, int slot, int button, ClickType click, Player player, CallbackInfo ci) {
+        // Push the profiler.
+        ProfilerFiller profiler = this.minecraft.getProfiler();
+        profiler.push("bscfsio:handle_mouse_click");
+
         // Log. (**TRACE**)
         if (BSCFSIO_LOGGER.isTraceEnabled()) {
             BSCFSIO_LOGGER.trace("BSCFSIO: Handling inventory mouse click. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {})", container, slot, button, click, player, ci, this);
@@ -101,27 +106,33 @@ public final class MultiPlayerGameModeMixin {
 
         // Skip if click is not shift-click.
         if (click != ClickType.QUICK_MOVE) {
-            // Log, stop. (**TRACE**)
-            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
-            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because click != QUICK_MOVE. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {})", container, slot, button, click, player, ci, this);
+            // Log, pop, stop. (**TRACE**)
+            if (BSCFSIO_LOGGER.isTraceEnabled()) {
+                BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because click != QUICK_MOVE. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {})", container, slot, button, click, player, ci, this);
+            }
+            profiler.pop();
             return;
         }
 
         // Skip if the mod is disabled.
         BConfig config = BConfig.get();
         if (!config.enabled()) {
-            // Log, stop. (**TRACE**)
-            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
-            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the mod is not enabled. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {})", container, slot, button, click, player, ci, this, config);
+            // Log, pop, stop. (**TRACE**)
+            if (BSCFSIO_LOGGER.isTraceEnabled()) {
+                BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the mod is not enabled. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {})", container, slot, button, click, player, ci, this, config);
+            }
+            profiler.pop();
             return;
         }
 
         // Skip if click is out of bounds.
         NonNullList<Slot> items = player.containerMenu.slots;
         if ((slot < 0) || (slot >= items.size())) {
-            // Log, stop. (**TRACE**)
-            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
-            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the slot is out out bounds. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, itemsSize: {})", container, slot, button, click, player, ci, this, config, items, items.size());
+            // Log, pop, stop. (**TRACE**)
+            if (BSCFSIO_LOGGER.isTraceEnabled()) {
+                BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the slot is out out bounds. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, itemsSize: {})", container, slot, button, click, player, ci, this, config, items, items.size());
+            }
+            profiler.pop();
             return;
         }
 
@@ -129,9 +140,11 @@ public final class MultiPlayerGameModeMixin {
         Slot clickedSlot = items.get(slot);
         ItemStack stack = clickedSlot.getItem();
         if (!config.isMovingProhibited(stack)) {
-            // Log, stop. (**TRACE**)
-            if (!BSCFSIO_LOGGER.isTraceEnabled()) return;
-            BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the moved item is allowed to be moved. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, clickedSlot: {}, stack: {})", container, slot, button, click, player, ci, this, config, items, clickedSlot, stack);
+            // Log, pop, stop. (**TRACE**)
+            if (BSCFSIO_LOGGER.isTraceEnabled()) {
+                BSCFSIO_LOGGER.trace("BSCFSIO: Skipping handling inventory mouse click, because the moved item is allowed to be moved. (container: {}, slot: {}, button: {}, click: {}, player: {}, ci: {}, gameMode: {}, config: {}, items: {}, clickedSlot: {}, stack: {})", container, slot, button, click, player, ci, this, config, items, clickedSlot, stack);
+            }
+            profiler.pop();
             return;
         }
 
@@ -153,5 +166,8 @@ public final class MultiPlayerGameModeMixin {
         if (visual > 0L) {
             ((BSlot) clickedSlot).bscfsio_renderOverlayUntil(System.nanoTime() + (visual * 1_000_000L));
         }
+
+        // Pop the profiler.
+        profiler.pop();
     }
 }
