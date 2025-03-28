@@ -4,8 +4,9 @@
         <Console name="Console" target="SYSTEM_OUT">
             <Filters>
                 <RegexFilter regex="^Failed to verify authentication$" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <RegexFilter regex="^Couldn't connect to realms$" onMatch="DENY" onMismatch="NEUTRAL"/>
             </Filters>
-            <PatternLayout pattern="%style{[%d{HH:mm:ss}]}{blue} %highlight{[%t/%level]}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=blue}: %style{(%logger{0})}{cyan} %msg{nolookups}%n%xEx{full}"/>
+            <PatternLayout pattern="%style{[%d{HH:mm:ss}]}{blue} %highlight{[%t/%level]}{FATAL=bright_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=bright_white, TRACE=white}: %style{(%logger{0})}{cyan} %msg{nolookups}%n%xEx{full}" disableAnsi="false"/>
         </Console>
         <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz" immediateFlush="false">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: (%logger{0}) %msg{nolookups}%n%xEx{full}"/>
@@ -13,7 +14,7 @@
                 <TimeBasedTriggeringPolicy/>
                 <OnStartupTriggeringPolicy/>
             </Policies>
-            <DefaultRolloverStrategy compressionLevel="9" max="1000"/>
+            <DefaultRolloverStrategy compressionLevel="9" max="100"/>
         </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
