@@ -29,7 +29,9 @@
  * @see ru.vidtu.bscfsio.BSCFSIO
  * @see ru.vidtu.bscfsio.BModMenu
  */
+@ApiStatus.Internal
 @NullMarked
 package ru.vidtu.bscfsio;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;

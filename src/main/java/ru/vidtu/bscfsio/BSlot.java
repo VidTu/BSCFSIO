@@ -25,6 +25,7 @@
 package ru.vidtu.bscfsio;
 
 import net.minecraft.world.inventory.Slot;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
@@ -33,6 +34,7 @@ import org.jspecify.annotations.NullMarked;
  *
  * @author VidTu
  */
+@ApiStatus.Internal
 @NullMarked
 public interface BSlot {
     /**

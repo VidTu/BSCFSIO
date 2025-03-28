@@ -68,6 +68,7 @@ public final class BConfig implements ConfigData {
     /**
      * Logger for this class.
      */
+    @ConfigEntry.Gui.Excluded
     private static final Logger LOGGER = LoggerFactory.getLogger("BSCFSIO/BConfig");
 
     /**

@@ -42,6 +42,7 @@ import ru.vidtu.bscfsio.BSlot;
  *
  * @author VidTu
  */
+// @ApiStatus.Internal // Can't annotate this without logging in the console.
 @Mixin(Slot.class)
 @NullMarked
 public final class SlotMixin implements BSlot {
